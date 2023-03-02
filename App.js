@@ -53,7 +53,7 @@ return(
  
 );
   }else if(loggedInState==loggedInStates.LOGGED_IN){
-    return <Navigation/>
+    return <Navigation setLoggedInState={setLoggedInState}/>
   } else if(loggedInState==loggedInStates.NOT_LOGGED_IN){
     return (
       <View>
