@@ -6,7 +6,7 @@ import OnboardingScreen from './screens/OnboardingScreen';
 import Home from './screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as LocalAuthentication from 'expo-local-authentication'
 
 
 
@@ -24,7 +24,19 @@ const App = () =>{ // arrow function
   const [phoneNumber,setPhoneNumber] = React.useState("");
   const [oneTimePassword, setOneTimePassword] = React.useState("");
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
+  const[isBiometricSupported, setIsBiometricSupported] = React.useState(false);
+  const[isBiometricEnrolled, setIsBiometricEnrolled] = React.useState(false);
 
+  useEffect(()=> {
+    (async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      console.log('compatible', compatible);
+      setIsBiometricSupported(compatible);
+
+      const enrolled = await LocalAuthentication.isEnrolledAsync();
+      setIsBiometricEnrolled(enrolled);
+    })();
+  });
   useEffect(()=>{//this is code that has to run before we show app screen
    const getSessionToken = async()=>{
     const sessionToken = await AsyncStorage.getItem('sessionToken');
@@ -58,11 +70,17 @@ return(
     return (
       <View>
         <Text style={styles.title}>Welcome Back</Text>
+        <Text> {isBiometricSupported ? 'Your device is compatible with Biometrics':
+        'Your device is not compatible with Biometrics'}
+        </Text>
+        <Text> {isBiometricEnrolled ? 'You have a fingerprint or face Biometric': 
+        'You have not saved a fingerprint or face Biometric'}
+        </Text>
         <TextInput 
           value={phoneNumber}
           onChangeText={setPhoneNumber}
           style={styles.input}  
-          placeholderTextColor='#4251f5' 
+          placeholderTextColor='#A0CE4E' 
           placeholder='Cell Phone'>          
         </TextInput>
         <Button
@@ -153,9 +171,11 @@ return(
        marginTop:100
      },
      button: {
+      
        alignItems: "center",
        backgroundColor: "#DDDDDD",
        padding: 10
+       
      },  
      title:{
       textAlign:"center",
