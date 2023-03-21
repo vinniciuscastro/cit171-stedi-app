@@ -297,8 +297,23 @@ console.log('Error', error)
         
 //circula process bar
 console.log(stepCount, "stepCount");
+const getSessionToken = async()=>{
+  const sessionToken = await AsyncStorage.getItem('sessionToken');
+  console.log('sessionToken',sessionToken);
 
 
+const myCustomerShare = async() =>{
+  const shareOptions = {
+    message: 'https://dev.stedi.me/timer.html#' + token.current,
+  }
+  try{
+    const shareResponse = await Share.share(shareOptions)
+    console.log(shareResponse);
+    }
+    catch(error){
+console.log('Error', error)
+    }
+  }
 
 if (currentScreen === 'counter'){
 
@@ -327,6 +342,13 @@ elevation: 4}}>
     >
       <Text>{subscription ? 'Stop' : 'GO'}</Text>
      </TouchableOpacity>
+     <TouchableOpacity
+     onPress={myCustomerShare}
+      style={styles.spotter}
+    >
+      <Text>{'Add spotter'}</Text>
+     </TouchableOpacity>
+    
 
      </CardContent>
      <ProgressBar progress={(stepCount * 0.50/30) + (completionCount * 0.50)} width={300} height={25} color={'#A0CE4E'} style={styles.bar}/>
@@ -416,7 +438,7 @@ subtitle={messageOutcome()}
 
 
 }
-
+}
 function round(n) {
   if (!n) {
     return 0;
@@ -433,6 +455,18 @@ const styles = StyleSheet.create({
 
   button: {
     marginTop: 15,
+    marginBottom: 20,
+    width: 170,
+    height: 38,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 100,
+    backgroundColor: '#A0CE4E',
+    marginLeft:50
+  },
+  spotter: {
+    marginTop: -15,
     marginBottom: 20,
     width: 170,
     height: 38,

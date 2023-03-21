@@ -37,7 +37,7 @@ const App = () =>{ // arrow function
       setIsBiometricEnrolled(enrolled);
     })();
   });
-  useEffect(()=>{//this is code that has to run before we show app screen
+  useEffect(()=>{//this is the code that has to run before we show app screen
    const getSessionToken = async()=>{
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     console.log('sessionToken',sessionToken);
