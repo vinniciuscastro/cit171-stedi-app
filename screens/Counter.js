@@ -301,7 +301,7 @@ const getSessionToken = async()=>{
   const sessionToken = await AsyncStorage.getItem('sessionToken');
   console.log('sessionToken',sessionToken);
 
-
+}
 const myCustomerShare = async() =>{
   const shareOptions = {
     message: 'https://dev.stedi.me/timer.html#' + token.current,
@@ -431,14 +431,14 @@ subtitle={messageOutcome()}
       <Text  style={{textAlign:'center', color: '#0000EE'}} onPress={() => Linking.openURL(url)}>More info</Text>
      </CardContent>
     </Card>
-         </View>
+    </View>
       );
 
       }
-
-
+    
+    
 }
-}
+
 function round(n) {
   if (!n) {
     return 0;
