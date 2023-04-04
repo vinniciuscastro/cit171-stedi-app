@@ -5,6 +5,7 @@ import quotes from '../data/quote.json';
 import { Card, CardTitle, CardContent} from 'react-native-material-cards';
 import { LineChart} from 'react-native-chart-kit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { stepCount } from './Counter.js';
 
 
 const Home = (props) => {
@@ -13,6 +14,47 @@ const Home = (props) => {
   useEffect(()=>{ todayScore();},[]);
 
 //today score
+const savingSteps = async(event) =>{
+  //how to get startime, stepPoints, StopTime, TestTime
+  let stepPoints = [];
+  const lastStep = steps.current[29];
+  const firstStep = steps.current[0];
+  stopTime.current = lastStep.time;
+  
+  testTime.current = lastStep.time - firstStep.time;
+  
+  let previousTime = startTime.current;
+  
+  stepPoints  = [];
+   steps.current.forEach(stepObject=> {
+     const stepTime = stepObject.time - previousTime;
+     previousTime = stepObject.time;
+     stepPoints.push(stepTime);
+  }); 
+  
+    try{
+  
+  console.log('token:' ,token.current);
+  await fetch('https://dev.stedi.me/rapidsteptest',{
+    method:'POST',
+    headers:{
+      'Content-Type': 'application/json',
+     'suresteps.session.token': token.current
+    },
+    body:JSON.stringify({
+  customer:userName.current,
+  startTime: startTime.current,
+  stepPoints,
+  stopTime: stopTime.current,
+  testTime: testTime.current,
+  totalSteps:30
+    })
+  })
+    }
+   catch(error){
+    console.log('save error', error);
+   }
+  }
 const todayScore = async() =>{
   let scoreObject ={};
   try{
@@ -30,8 +72,8 @@ console.log('userName',userName);
     }
   })
   console.log('token:', token.current);
-  const scoreText = await scoreResponse.text();
-  console.log('scoreText',scoreText);
+  // const scoreText = await scoreResponse.text();
+  // console.log('scoreText',scoreText);
   scoreObject = await scoreResponse.json();
   setScore(scoreObject.score);
   console.log(scoreObject.score);
@@ -75,6 +117,7 @@ const colorsToday = colors[day.getDay()];
       <Card style={{width:'50%',borderRadius:20, marginTop:10, shadowColor: "#000",shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.23, shadowRadius: 2.62, elevation: 4}}>
         <CardTitle   titleStyle={{fontSize:17}}
         title='Today'
+        
        />
        <Text style={{fontSize:35,fontWeight:'bold', color:'black'}}>{score}</Text>
         <FontAwesome5 name="arrow-down"/>
